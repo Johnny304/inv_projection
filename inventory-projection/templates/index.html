@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory Projection</title>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#projection" aria-label="Ashley Global Capability Center — Inventory Projection">
+        <span class="brand-wordmark">
+          <span class="brand-wordmark-text">Ashley Global<br>Capability Center</span>
+        </span>
+        <span class="brand-title">
+          <span class="brand-title-accent" aria-hidden="true"></span>
+          <span class="brand-title-copy">
+            <span class="brand-title-kicker">Planning tools</span>
+            <span class="brand-title-name">Inventory<br>Projection</span>
+          </span>
+        </span>
+      </a>
+      <p class="eyebrow">Workspaces</p>
+      <nav class="nav" aria-label="Application">
+        <button class="nav-link active" data-view="projection"><span>▦</span> ETA by Whse</button>
+        <button class="nav-link" data-view="projection-iv"><span>▥</span> ETA</button>
+        <button class="nav-link" data-view="projection-etd"><span>▦</span> ETD by Whse</button>
+        <button class="nav-link" data-view="projection-etd-iv"><span>▥</span> ETD</button>
+        <button class="nav-link" data-view="risk-items"><span>◒</span> SI Negative Items</button>
+        <button class="nav-link" data-view="read-me"><span>?</span> Read Me</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="data-status"><i></i><span><strong id="data-status-detail">Loading…</strong></span></div>
+        <div class="loading-indicator" id="loading-indicator" role="status" aria-live="polite" hidden>
+          <span class="loading-spinner" aria-hidden="true"></span>
+          <span id="loading-message">Loading data…</span>
+        </div>
+        <button class="data-refresh" id="data-refresh" type="button" title="Reload notebook export from data/">
+          <span class="data-refresh-icon" aria-hidden="true">↻</span>
+          <span class="data-refresh-label">Refresh data</span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">
+          <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+          <span class="theme-toggle-label">Dark mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <main>
+      <button class="mobile-menu" aria-label="Open menu">☰</button>
+
+      <section id="projection" class="view active">
+        <section class="filter-bar-card sticky-filters" aria-label="Projection filters">
+          <div class="filter-bar-global">
+            <div class="filter-bar-global-scroll">
+              <div class="fb-group fb-w-md">
+                <label for="vendor-filter-query">Vendor</label>
+                <div class="search-select" data-filter-id="vendor-filter" data-param="vendor" data-options="vendors" data-all="All">
+                  <input type="hidden" id="vendor-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="vendor-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="series-filter-query">Series</label>
+                <div class="search-select" data-filter-id="series-filter" data-param="series" data-options="series" data-all="All">
+                  <input type="hidden" id="series-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="series-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="item-filter-query">Item</label>
+                <div class="search-select" data-filter-id="item-filter" data-param="item" data-options="items" data-all="All">
+                  <input type="hidden" id="item-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="item-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-lg">
+                <label for="profile-filter-query">Prod</label>
+                <div class="search-select" data-filter-id="profile-filter" data-param="profile" data-options="profiles" data-all="All">
+                  <input type="hidden" id="profile-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="profile-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="division-filter-query">Division</label>
+                <div class="search-select" data-filter-id="division-filter" data-param="division" data-options="divisions" data-all="All">
+                  <input type="hidden" id="division-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="division-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="warehouse-filter-query">Warehouse</label>
+                <div class="search-select" data-filter-id="warehouse-filter" data-param="warehouse" data-options="warehouses" data-all="All">
+                  <input type="hidden" id="warehouse-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="warehouse-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="mb-filter-query">MB</label>
+                <div class="search-select" data-filter-id="mb-filter" data-param="mb" data-options="mb_codes" data-all="All">
+                  <input type="hidden" id="mb-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="mb-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="risk-filter-query">Risk Item</label>
+                <div class="search-select" data-filter-id="risk-filter" data-param="risk_filter" data-options="risk_filters" data-all="All">
+                  <input type="hidden" id="risk-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables">
+                <label>Data Types</label>
+                <div class="variable-filter" id="variable-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="variable-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="variable-filter-label">11 of 11</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="variable-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <small>Turn off the data types to toggle, then choose the weeks under Apply to ETA weeks. The row stays visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-scope-weeks">
+                <label>Apply to ETA weeks</label>
+                <div class="variable-filter scope-week-filter" id="eta-scope-weeks">
+                  <button type="button" class="variable-filter-trigger fb-control" id="eta-scope-weeks-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="eta-scope-weeks-label">No weeks yet</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="eta-scope-weeks-panel" hidden></div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables fb-show-rows">
+                <label>Show rows</label>
+                <div class="variable-filter" id="show-rows-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="show-rows-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="show-rows-filter-label">16 of 16</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="show-rows-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <p class="kind-heading display">Display-only</p>
+                    <label><input type="checkbox" value="dual_source" checked><span>Dual Source</span></label>
+                    <label><input type="checkbox" value="promotional_lift" checked><span>Promo Lift</span></label>
+                    <label><input type="checkbox" value="safety_stock" checked><span>Safety</span></label>
+                    <label><input type="checkbox" value="si_ss" checked><span>SI-SS</span></label>
+                    <label><input type="checkbox" value="ss_pct" checked><span>SS%</span></label>
+                    <small>Hides matrix rows only; does not change SI. SI Projection always remains visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-week">
+                <label>Week range</label>
+                <div class="week-box" id="week-box">
+                  <div class="week-inline-body">
+                    <label class="week-date-field">
+                      <input type="date" id="week-from" aria-label="Week from">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <span class="week-sep">–</span>
+                    <label class="week-date-field">
+                      <input type="date" id="week-to" aria-label="Week to">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <button type="button" class="btn-week-clear" id="week-clear" title="Clear week range">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                    </button>
+                  </div>
+                  <div class="week-range-wrap">
+                    <div class="week-range-track" id="week-range-track">
+                      <div class="week-range-fill" id="week-range-fill"></div>
+                      <div class="week-range-thumb" id="week-thumb-from"></div>
+                      <div class="week-range-thumb" id="week-thumb-to"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-actions">
+                <label>&nbsp;</label>
+                <div class="filter-actions">
+                  <button class="text-button" id="export-button" type="button">Export</button>
+                  <button class="btn-clear-filters" id="clear-filters" type="button">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12M5.5 3V2h5v1M4 3l.7 10a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L12 3"/></svg>
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="matrix-card matrix-full">
+          <div class="matrix-scroll" tabindex="0"><table class="projection-table" id="projection-table"></table></div>
+        </section>
+      </section>
+
+      <section id="projection-iv" class="view">
+        <section class="filter-bar-card sticky-filters" aria-label="Item vendor projection filters">
+          <div class="filter-bar-global">
+            <div class="filter-bar-global-scroll">
+              <div class="fb-group fb-w-md">
+                <label for="iv-vendor-filter-query">Vendor</label>
+                <div class="iv-search-select" data-filter-id="iv-vendor-filter" data-param="vendor" data-options="vendors" data-all="All">
+                  <input type="hidden" id="iv-vendor-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-vendor-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="iv-series-filter-query">Series</label>
+                <div class="iv-search-select" data-filter-id="iv-series-filter" data-param="series" data-options="series" data-all="All">
+                  <input type="hidden" id="iv-series-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-series-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="iv-item-filter-query">Item</label>
+                <div class="iv-search-select" data-filter-id="iv-item-filter" data-param="item" data-options="items" data-all="All">
+                  <input type="hidden" id="iv-item-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-item-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-lg">
+                <label for="iv-profile-filter-query">Prod</label>
+                <div class="iv-search-select" data-filter-id="iv-profile-filter" data-param="profile" data-options="profiles" data-all="All">
+                  <input type="hidden" id="iv-profile-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-profile-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="iv-division-filter-query">Division</label>
+                <div class="iv-search-select" data-filter-id="iv-division-filter" data-param="division" data-options="divisions" data-all="All">
+                  <input type="hidden" id="iv-division-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-division-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="iv-mb-filter-query">MB</label>
+                <div class="iv-search-select" data-filter-id="iv-mb-filter" data-param="mb" data-options="mb_codes" data-all="All">
+                  <input type="hidden" id="iv-mb-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-mb-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="iv-risk-filter-query">Risk Item</label>
+                <div class="iv-search-select" data-filter-id="iv-risk-filter" data-param="risk_filter" data-options="risk_filters" data-all="All">
+                  <input type="hidden" id="iv-risk-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="iv-risk-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables">
+                <label>Data Types</label>
+                <div class="variable-filter" id="iv-variable-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="iv-variable-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="iv-variable-filter-label">11 of 11</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="iv-variable-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <small>Turn off the data types to toggle, then choose the weeks under Apply to ETA weeks. The row stays visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-scope-weeks">
+                <label>Apply to ETA weeks</label>
+                <div class="variable-filter scope-week-filter" id="iv-scope-weeks">
+                  <button type="button" class="variable-filter-trigger fb-control" id="iv-scope-weeks-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="iv-scope-weeks-label">No weeks yet</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="iv-scope-weeks-panel" hidden></div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables fb-show-rows">
+                <label>Show rows</label>
+                <div class="variable-filter" id="iv-show-rows-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="iv-show-rows-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="iv-show-rows-filter-label">16 of 16</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="iv-show-rows-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <p class="kind-heading display">Display-only</p>
+                    <label><input type="checkbox" value="dual_source" checked><span>Dual Source</span></label>
+                    <label><input type="checkbox" value="promotional_lift" checked><span>Promo Lift</span></label>
+                    <label><input type="checkbox" value="safety_stock" checked><span>Safety</span></label>
+                    <label><input type="checkbox" value="si_ss" checked><span>SI-SS</span></label>
+                    <label><input type="checkbox" value="ss_pct" checked><span>SS%</span></label>
+                    <small>Hides matrix rows only; does not change SI. SI Projection always remains visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-week">
+                <label>Week range</label>
+                <div class="week-box" id="iv-week-box">
+                  <div class="week-inline-body">
+                    <label class="week-date-field">
+                      <input type="date" id="iv-week-from" aria-label="Week from">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <span class="week-sep">–</span>
+                    <label class="week-date-field">
+                      <input type="date" id="iv-week-to" aria-label="Week to">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <button type="button" class="btn-week-clear" id="iv-week-clear" title="Clear week range">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                    </button>
+                  </div>
+                  <div class="week-range-wrap">
+                    <div class="week-range-track" id="iv-week-range-track">
+                      <div class="week-range-fill" id="iv-week-range-fill"></div>
+                      <div class="week-range-thumb" id="iv-week-thumb-from"></div>
+                      <div class="week-range-thumb" id="iv-week-thumb-to"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-actions">
+                <label>&nbsp;</label>
+                <div class="filter-actions">
+                  <button class="text-button" id="iv-export-button" type="button">Export</button>
+                  <button class="btn-clear-filters" id="iv-clear-filters" type="button">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12M5.5 3V2h5v1M4 3l.7 10a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L12 3"/></svg>
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="matrix-card matrix-full">
+          <div class="matrix-scroll" tabindex="0"><table class="projection-table iv-table" id="iv-projection-table"></table></div>
+        </section>
+      </section>
+
+      <section id="projection-etd" class="view">
+        <section class="filter-bar-card sticky-filters" aria-label="ETD projection filters">
+          <div class="filter-bar-global">
+            <div class="filter-bar-global-scroll">
+              <div class="fb-group fb-w-md">
+                <label for="etd-vendor-filter-query">Vendor</label>
+                <div class="search-select" data-filter-id="etd-vendor-filter" data-param="vendor" data-options="vendors" data-all="All">
+                  <input type="hidden" id="etd-vendor-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-vendor-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-series-filter-query">Series</label>
+                <div class="search-select" data-filter-id="etd-series-filter" data-param="series" data-options="series" data-all="All">
+                  <input type="hidden" id="etd-series-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-series-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-item-filter-query">Item</label>
+                <div class="search-select" data-filter-id="etd-item-filter" data-param="item" data-options="items" data-all="All">
+                  <input type="hidden" id="etd-item-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-item-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-lg">
+                <label for="etd-profile-filter-query">Prod</label>
+                <div class="search-select" data-filter-id="etd-profile-filter" data-param="profile" data-options="profiles" data-all="All">
+                  <input type="hidden" id="etd-profile-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-profile-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-division-filter-query">Division</label>
+                <div class="search-select" data-filter-id="etd-division-filter" data-param="division" data-options="divisions" data-all="All">
+                  <input type="hidden" id="etd-division-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-division-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-warehouse-filter-query">Warehouse</label>
+                <div class="search-select" data-filter-id="etd-warehouse-filter" data-param="warehouse" data-options="warehouses" data-all="All">
+                  <input type="hidden" id="etd-warehouse-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-warehouse-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-mb-filter-query">MB</label>
+                <div class="search-select" data-filter-id="etd-mb-filter" data-param="mb" data-options="mb_codes" data-all="All">
+                  <input type="hidden" id="etd-mb-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-mb-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-risk-filter-query">Risk Item</label>
+                <div class="search-select" data-filter-id="etd-risk-filter" data-param="risk_filter" data-options="risk_filters" data-all="All">
+                  <input type="hidden" id="etd-risk-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="etd-risk-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables">
+                <label>Data Types</label>
+                <div class="variable-filter" id="etd-variable-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-variable-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-variable-filter-label">11 of 11</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-variable-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <small>Turn off the data types to toggle, then choose the weeks under Apply to ETD weeks. The row stays visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-scope-weeks">
+                <label>Apply to ETD weeks</label>
+                <div class="variable-filter scope-week-filter" id="etd-scope-weeks">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-scope-weeks-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-scope-weeks-label">No weeks yet</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-scope-weeks-panel" hidden></div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables fb-show-rows">
+                <label>Show rows</label>
+                <div class="variable-filter" id="etd-show-rows-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-show-rows-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-show-rows-filter-label">16 of 16</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-show-rows-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <p class="kind-heading display">Display-only</p>
+                    <label><input type="checkbox" value="dual_source" checked><span>Dual Source</span></label>
+                    <label><input type="checkbox" value="promotional_lift" checked><span>Promo Lift</span></label>
+                    <label><input type="checkbox" value="safety_stock" checked><span>Safety</span></label>
+                    <label><input type="checkbox" value="si_ss" checked><span>SI-SS</span></label>
+                    <label><input type="checkbox" value="ss_pct" checked><span>SS%</span></label>
+                    <small>Hides matrix rows only; does not change SI. SI Projection always remains visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-week">
+                <label>Week range</label>
+                <div class="week-box" id="etd-week-box">
+                  <div class="week-inline-body">
+                    <label class="week-date-field">
+                      <input type="date" id="etd-week-from" aria-label="Week from">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <span class="week-sep">–</span>
+                    <label class="week-date-field">
+                      <input type="date" id="etd-week-to" aria-label="Week to">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <button type="button" class="btn-week-clear" id="etd-week-clear" title="Clear week range">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                    </button>
+                  </div>
+                  <div class="week-range-wrap">
+                    <div class="week-range-track" id="etd-week-range-track">
+                      <div class="week-range-fill" id="etd-week-range-fill"></div>
+                      <div class="week-range-thumb" id="etd-week-thumb-from"></div>
+                      <div class="week-range-thumb" id="etd-week-thumb-to"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-actions">
+                <label>&nbsp;</label>
+                <div class="filter-actions">
+                  <button class="text-button" id="etd-export-button" type="button">Export</button>
+                  <button class="btn-clear-filters" id="etd-clear-filters" type="button">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12M5.5 3V2h5v1M4 3l.7 10a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L12 3"/></svg>
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="matrix-card matrix-full">
+          <div class="matrix-scroll" tabindex="0"><table class="projection-table" id="etd-projection-table"></table></div>
+        </section>
+      </section>
+
+      <section id="projection-etd-iv" class="view">
+        <section class="filter-bar-card sticky-filters" aria-label="ETD item vendor projection filters">
+          <div class="filter-bar-global">
+            <div class="filter-bar-global-scroll">
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-vendor-filter-query">Vendor</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-vendor-filter" data-param="vendor" data-options="vendors" data-all="All">
+                  <input type="hidden" id="etd-iv-vendor-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-vendor-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-series-filter-query">Series</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-series-filter" data-param="series" data-options="series" data-all="All">
+                  <input type="hidden" id="etd-iv-series-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-series-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-item-filter-query">Item</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-item-filter" data-param="item" data-options="items" data-all="All">
+                  <input type="hidden" id="etd-iv-item-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-item-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-lg">
+                <label for="etd-iv-profile-filter-query">Prod</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-profile-filter" data-param="profile" data-options="profiles" data-all="All">
+                  <input type="hidden" id="etd-iv-profile-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-profile-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-division-filter-query">Division</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-division-filter" data-param="division" data-options="divisions" data-all="All">
+                  <input type="hidden" id="etd-iv-division-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-division-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-mb-filter-query">MB</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-mb-filter" data-param="mb" data-options="mb_codes" data-all="All">
+                  <input type="hidden" id="etd-iv-mb-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-mb-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="etd-iv-risk-filter-query">Risk Item</label>
+                <div class="iv-search-select" data-filter-id="etd-iv-risk-filter" data-param="risk_filter" data-options="risk_filters" data-all="All">
+                  <input type="hidden" id="etd-iv-risk-filter" value="">
+                  <button type="button" class="iv-search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="iv-search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="iv-search-select-panel" hidden>
+                    <input type="search" class="iv-search-select-query" id="etd-iv-risk-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="iv-search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables">
+                <label>Data Types</label>
+                <div class="variable-filter" id="etd-iv-variable-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-iv-variable-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-iv-variable-filter-label">11 of 11</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-iv-variable-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <small>Turn off the data types to toggle, then choose the weeks under Apply to ETD weeks. The row stays visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-scope-weeks">
+                <label>Apply to ETD weeks</label>
+                <div class="variable-filter scope-week-filter" id="etd-iv-scope-weeks">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-iv-scope-weeks-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-iv-scope-weeks-label">No weeks yet</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-iv-scope-weeks-panel" hidden></div>
+                </div>
+              </div>
+              <div class="fb-group fb-variables fb-show-rows">
+                <label>Show rows</label>
+                <div class="variable-filter" id="etd-iv-show-rows-filter">
+                  <button type="button" class="variable-filter-trigger fb-control" id="etd-iv-show-rows-filter-trigger" aria-haspopup="true" aria-expanded="false">
+                    <span id="etd-iv-show-rows-filter-label">16 of 16</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="variable-filter-panel" id="etd-iv-show-rows-filter-panel" hidden>
+                    <label class="variable-filter-all"><input type="checkbox" data-all checked><span>All</span></label>
+                    <p class="kind-heading demand">Demand (−)</p>
+                    <label><input type="checkbox" value="firm_demand" checked><span>Firm Demand</span></label>
+                    <label><input type="checkbox" value="firm_trf_out" checked><span>Firm Trf Out</span></label>
+                    <label><input type="checkbox" value="net_fcst" checked><span>Net Forecast</span></label>
+                    <label><input type="checkbox" value="planned_trf_out" checked><span>Planned Trf Out</span></label>
+                    <p class="kind-heading supply">Supply (+)</p>
+                    <label><input type="checkbox" value="intransit_trf_in" checked><span>In-transit Trf In</span></label>
+                    <label><input type="checkbox" value="on_order_trf_in" checked><span>On-order Trf In</span></label>
+                    <label><input type="checkbox" value="planned_pos" checked><span>Planned PO</span></label>
+                    <label><input type="checkbox" value="planned_trf_in" checked><span>Planned Trf In</span></label>
+                    <label><input type="checkbox" value="firm_pos" checked><span>Firm PO</span></label>
+                    <label><input type="checkbox" value="firm_prod" checked><span>Firm Prod</span></label>
+                    <label><input type="checkbox" value="planned_prod" checked><span>Planned Prod</span></label>
+                    <p class="kind-heading display">Display-only</p>
+                    <label><input type="checkbox" value="dual_source" checked><span>Dual Source</span></label>
+                    <label><input type="checkbox" value="promotional_lift" checked><span>Promo Lift</span></label>
+                    <label><input type="checkbox" value="safety_stock" checked><span>Safety</span></label>
+                    <label><input type="checkbox" value="si_ss" checked><span>SI-SS</span></label>
+                    <label><input type="checkbox" value="ss_pct" checked><span>SS%</span></label>
+                    <small>Hides matrix rows only; does not change SI. SI Projection always remains visible.</small>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-week">
+                <label>Week range</label>
+                <div class="week-box" id="etd-iv-week-box">
+                  <div class="week-inline-body">
+                    <label class="week-date-field">
+                      <input type="date" id="etd-iv-week-from" aria-label="Week from">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <span class="week-sep">–</span>
+                    <label class="week-date-field">
+                      <input type="date" id="etd-iv-week-to" aria-label="Week to">
+                      <span class="week-date-ico" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M2 6h12M5 1v3M11 1v3"/></svg></span>
+                    </label>
+                    <button type="button" class="btn-week-clear" id="etd-iv-week-clear" title="Clear week range">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+                    </button>
+                  </div>
+                  <div class="week-range-wrap">
+                    <div class="week-range-track" id="etd-iv-week-range-track">
+                      <div class="week-range-fill" id="etd-iv-week-range-fill"></div>
+                      <div class="week-range-thumb" id="etd-iv-week-thumb-from"></div>
+                      <div class="week-range-thumb" id="etd-iv-week-thumb-to"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-actions">
+                <label>&nbsp;</label>
+                <div class="filter-actions">
+                  <button class="text-button" id="etd-iv-export-button" type="button">Export</button>
+                  <button class="btn-clear-filters" id="etd-iv-clear-filters" type="button">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12M5.5 3V2h5v1M4 3l.7 10a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L12 3"/></svg>
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="matrix-card matrix-full">
+          <div class="matrix-scroll" tabindex="0"><table class="projection-table iv-table" id="etd-iv-projection-table"></table></div>
+        </section>
+      </section>
+
+      <section id="risk-items" class="view">
+        <div class="risk-tabs" role="tablist" aria-label="SI Negative Items views">
+          <button class="risk-tab active" type="button" data-risk-view="whse" role="tab" aria-selected="true">Risk Item by Whse</button>
+          <button class="risk-tab" type="button" data-risk-view="item_vendor" role="tab" aria-selected="false">Risk Item</button>
+        </div>
+        <section class="filter-bar-card sticky-filters" aria-label="SI Negative filters">
+          <div class="filter-bar-global">
+            <div class="filter-bar-global-scroll">
+              <div class="fb-group fb-w-md">
+                <label for="risk-vendor-filter-query">Vendor</label>
+                <div class="search-select" data-filter-id="risk-vendor-filter" data-param="vendor" data-options="vendors" data-all="All">
+                  <input type="hidden" id="risk-vendor-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-vendor-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="risk-series-filter-query">Series</label>
+                <div class="search-select" data-filter-id="risk-series-filter" data-param="series" data-options="series" data-all="All">
+                  <input type="hidden" id="risk-series-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-series-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="risk-item-filter-query">Item</label>
+                <div class="search-select" data-filter-id="risk-item-filter" data-param="item" data-options="items" data-all="All">
+                  <input type="hidden" id="risk-item-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-item-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-lg">
+                <label for="risk-profile-filter-query">Prod</label>
+                <div class="search-select" data-filter-id="risk-profile-filter" data-param="profile" data-options="profiles" data-all="All">
+                  <input type="hidden" id="risk-profile-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-profile-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="risk-division-filter-query">Division</label>
+                <div class="search-select" data-filter-id="risk-division-filter" data-param="division" data-options="divisions" data-all="All">
+                  <input type="hidden" id="risk-division-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-division-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md risk-warehouse-group">
+                <label for="risk-warehouse-filter-query">Warehouse</label>
+                <div class="search-select" data-filter-id="risk-warehouse-filter" data-param="warehouse" data-options="warehouses" data-all="All">
+                  <input type="hidden" id="risk-warehouse-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-warehouse-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-w-md">
+                <label for="risk-type-filter-query">Risk Type</label>
+                <div class="search-select" data-filter-id="risk-type-filter" data-param="risk_filter" data-options="risk_filters" data-all="All">
+                  <input type="hidden" id="risk-type-filter" value="">
+                  <button type="button" class="search-select-trigger fb-control" aria-haspopup="listbox" aria-expanded="false">
+                    <span class="search-select-value">All</span>
+                    <span class="search-select-caret" aria-hidden="true"></span>
+                  </button>
+                  <div class="search-select-panel" hidden>
+                    <input type="search" class="search-select-query" id="risk-type-filter-query" placeholder="Type to search…" autocomplete="off">
+                    <ul class="search-select-options" role="listbox"></ul>
+                  </div>
+                </div>
+              </div>
+              <div class="fb-group fb-actions">
+                <label>&nbsp;</label>
+                <div class="filter-actions">
+                  <button class="text-button" id="risk-export" type="button">Export</button>
+                  <button class="btn-clear-filters" id="risk-clear" type="button">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h12M5.5 3V2h5v1M4 3l.7 10a1 1 0 0 0 1 .9h4.6a1 1 0 0 0 1-.9L12 3"/></svg>
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="risk-pane active" id="risk-pane-whse" data-risk-pane="whse">
+          <section class="matrix-card matrix-full">
+            <div class="matrix-scroll" tabindex="0"><table class="projection-table risk-table" id="risk-whse-table"></table></div>
+          </section>
+        </section>
+        <section class="risk-pane" id="risk-pane-item-vendor" data-risk-pane="item_vendor" hidden>
+          <section class="matrix-card matrix-full">
+            <div class="matrix-scroll" tabindex="0"><table class="projection-table risk-table" id="risk-iv-table"></table></div>
+          </section>
+        </section>
+      </section>
+
+      <section id="read-me" class="view">
+        <div class="view-heading">
+          <div>
+            <p class="eyebrow">Product guide</p>
+            <h1>Read Me</h1>
+            <p class="readme-intro">How Inventory Projection moves from company tables to the four planner boards, how SI is calculated, and how Dual Source rows appear without changing SI.</p>
+          </div>
+        </div>
+
+        <div class="readme-grid">
+          <section class="readme-card">
+            <p class="eyebrow">1 / Semantic model</p>
+            <h2>Overall architecture and route grain</h2>
+            <p class="readme-copy">The notebook is the only layer that reads company systems. It builds the working model, exports local cache files, and the FastAPI or Netlify website reads that snapshot. Warehouse boards are one <strong>Item × Vendor × Warehouse</strong> route across weekly Saturday week-ending dates. ETA / ETD boards aggregate the same warehouse routes to <strong>Item × Vendor</strong> and re-roll SI from the summed inputs.</p>
+            <div class="semantic-flow" aria-label="Inventory Projection data flow">
+              <div class="semantic-stage">
+                <strong>Company tables</strong>
+                <span>Supply plan<br>Item master<br>Dual-source POs<br>MB and transit</span>
+              </div>
+              <span class="semantic-arrow" aria-hidden="true">→</span>
+              <div class="semantic-stage">
+                <strong>Notebook model</strong>
+                <span><code>pdt_full2</code><br><code>pdt_etd_pivot</code><br><code>vendor_calendar_lt</code></span>
+              </div>
+              <span class="semantic-arrow" aria-hidden="true">→</span>
+              <div class="semantic-stage">
+                <strong>EXPORT cache</strong>
+                <span>ETA / ETD matrices<br>Item/vendor matrices<br>Lock Week metadata</span>
+              </div>
+              <span class="semantic-arrow" aria-hidden="true">→</span>
+              <div class="semantic-stage">
+                <strong>Website</strong>
+                <span>Four boards<br>filters and SI views</span>
+              </div>
+            </div>
+            <h3>Planner boards</h3>
+            <div class="readme-table-wrap">
+              <table class="readme-table">
+                <thead><tr><th>Tab</th><th>Grain</th><th>Week axis</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>ETA by Whse</strong></td><td>Item × Vendor × Warehouse</td><td>ETA Saturday</td></tr>
+                  <tr><td><strong>ETA</strong></td><td>Item × Vendor</td><td>ETA Saturday</td></tr>
+                  <tr><td><strong>ETD by Whse</strong></td><td>Item × Vendor × Warehouse</td><td>ETD Saturday, cropped from W-1</td></tr>
+                  <tr><td><strong>ETD</strong></td><td>Item × Vendor</td><td>Same ETD axis</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h3>Tables used</h3>
+            <div class="readme-table-wrap">
+              <table class="readme-table">
+                <thead><tr><th>Table</th><th>Used for</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Wholesale_DemandPlanning_AFI.SupplyPlanDetail</code></td><td>Weekly on-hand, demand, supply, safety, and promotion inputs</td></tr>
+                  <tr><td><code>PowerBI_SupplyChain.CurrentProductDetails</code></td><td>Item, vendor, series, division, and product status</td></tr>
+                  <tr><td><code>SupplyChain_Enh.ProductionConversion</code></td><td>Production resource assignment</td></tr>
+                  <tr><td><code>SupplyChain_Enh.ForecastCommonContainer_Logility</code></td><td>Make / Buy (MB) code</td></tr>
+                  <tr><td><code>Wholesale_ProductSourcing_AFI.DeliveryTimes</code> + <code>Wholesale_ProductSourcing.PortMaster</code></td><td>Transit, ETA, and Lock Week metadata</td></tr>
+                  <tr><td>Dual-source weekly extract</td><td>Secondary vendor name and Planned / Firm PO qty (display only)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="readme-card">
+            <p class="eyebrow">2 / Data variables and core logic</p>
+            <h2>How SI is calculated</h2>
+            <div class="readme-formula"><span>SI projection</span><strong>Opening inventory + Supply − Demand</strong></div>
+            <p class="readme-copy">The Data Types column uses the same colors as these groups: demand, supply, display-only, and SI Projection.</p>
+            <div class="readme-variable-grid">
+              <div class="readme-variable-group demand">
+                <h3>Demand (−)</h3>
+                <ul>
+                  <li>Firm Demand</li>
+                  <li>Firm Transfer Out</li>
+                  <li>Net Forecast</li>
+                  <li>Planned Transfer Out</li>
+                </ul>
+              </div>
+              <div class="readme-variable-group supply">
+                <h3>Supply (+)</h3>
+                <ul>
+                  <li>In-transit Transfer In</li>
+                  <li>On-order Transfer In</li>
+                  <li>Planned POs</li>
+                  <li>Planned Transfer In</li>
+                  <li>Firm POs</li>
+                  <li>Firm Prod</li>
+                  <li>Planned Prod</li>
+                </ul>
+              </div>
+              <div class="readme-variable-group display-only">
+                <h3>Display only</h3>
+                <ul>
+                  <li>Promotional Lift</li>
+                  <li>Safety Stock</li>
+                  <li>SI-SS / SS%</li>
+                  <li>Planned PO - secondary vendor</li>
+                  <li>Firm PO - secondary vendor</li>
+                </ul>
+              </div>
+              <div class="readme-variable-group si">
+                <h3>SI Projection</h3>
+                <ul>
+                  <li>Rolled shippable inventory (not a Data Type toggle)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="readme-notes">
+              <p><strong>Week labels:</strong> Planner <code>W-1</code> is export index <code>Wn = 0</code>. Each next week opens with the previous week’s SI.</p>
+              <p><strong>ETA opening:</strong> ON HAND at W-1, then roll every week.</p>
+              <p><strong>ETD opening:</strong> copy SHIPPABLE INV at W-1 and W1; first rolled week is W2. Data Type toggles do not change ETD SI at W-1 or W1.</p>
+              <p><strong>Not in SI:</strong> Promotional Lift, Safety Stock, Dual Source Planned/Firm PO, SI-SS, and SS%. Primary Planned POs / Firm POs still count as Supply.</p>
+              <p><strong>View behavior:</strong> Data Type toggles and item-week exclusions recalculate the current browser view only; they do not modify the exported snapshot.</p>
+            </div>
+            <div class="readme-links">
+              <a href="/docs/Data.md" target="_blank" rel="noreferrer">Open Data documentation</a>
+              <a href="/docs/Core%20logic.md" target="_blank" rel="noreferrer">Open Core logic documentation</a>
+              <a href="/docs/User%20guide.md" target="_blank" rel="noreferrer">Open User guide</a>
+            </div>
+          </section>
+
+          <section class="readme-card">
+            <p class="eyebrow">3 / Dual Source and filters</p>
+            <h2>How Dual Source rows work on the board</h2>
+            <p class="readme-copy">Dual-source items get two extra lines under the primary PO rows. They are reference only. Single-source items do not show them.</p>
+            <div class="readme-table-wrap">
+              <table class="readme-table">
+                <thead><tr><th>Control</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Data Types</strong></td><td>11 Demand / Supply drivers. Off hides the row and removes it from SI for this session. Dual Source is not a Data Type.</td></tr>
+                  <tr><td><strong>Show rows → Dual Source</strong></td><td>One checkbox shows or hides both extra PO lines. It never changes SI.</td></tr>
+                  <tr><td><strong>Planned PO - secondary vendor</strong></td><td>Sits under Planned PO. Secondary-vendor planned qty. Display only.</td></tr>
+                  <tr><td><strong>Firm PO - secondary vendor</strong></td><td>Sits under Firm PO. Secondary-vendor firm qty. Display only.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="readme-notes">
+              <p>The extra lines appear only when Dual Source is on and the route has a secondary vendor name and/or dual PO quantity.</p>
+              <p>Turning Dual Source off only hides the lines. SI still uses primary Planned PO / Firm PO when those Data Types are on.</p>
+              <p>Click a Demand/Supply cell to exclude that item×week from SI. Dual Source lines are not exclusion targets.</p>
+              <p>Lock Week underline (bold + dotted) is on <strong>ETA by Whse</strong> only. The Risk Item filter on ETD still uses the same warehouse lock calendar against ETD SI.</p>
+            </div>
+            <div class="readme-links">
+              <a href="/docs/User%20guide.md" target="_blank" rel="noreferrer">Open User guide</a>
+              <a href="/docs/Interface.md" target="_blank" rel="noreferrer">Open Interface documentation</a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <aside class="detail-drawer" id="detail-drawer" aria-hidden="true" aria-label="Projection detail">
+    <div class="drawer-header">
+      <button class="drawer-close" id="close-drawer" aria-label="Close detail">×</button>
+      <p class="eyebrow">Item-week context</p>
+      <h2 id="drawer-title">Item detail</h2>
+      <p id="drawer-subtitle"></p>
+    </div>
+    <div class="drawer-route" id="drawer-route"></div>
+    <div class="drawer-body">
+      <div class="metric-grid" id="drawer-metrics"></div>
+      <div class="calculation">
+        <p class="eyebrow">Projection explanation</p>
+        <p id="drawer-calc"></p>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/static/projection-core.js?v={{ asset_version }}"></script>
+  <script src="/static/app.js?v={{ asset_version }}"></script>
+  <script src="/static/iv-app.js?v={{ asset_version }}"></script>
+  <script src="/static/etd-app.js?v={{ asset_version }}"></script>
+  <script src="/static/etd-iv-app.js?v={{ asset_version }}"></script>
+  <script src="/static/risk-items.js?v={{ asset_version }}"></script>
+</body>
+</html>

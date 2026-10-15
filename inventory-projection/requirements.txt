@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+jinja2
+pydantic
+python-multipart
+pandas
+pyarrow
+numpy
+
+# Data refresh notebook only (inv_prj.ipynb). Not required to run the website.
+# sqlalchemy
+# pyodbc
+# python-dotenv
